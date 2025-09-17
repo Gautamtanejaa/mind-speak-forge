@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Brain, Menu, Activity, Database, Zap, BarChart } from "lucide-react";
+import { Brain, Menu, Activity, Database, Zap, BarChart, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthDialog } from "./AuthDialog";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const { user, signOut, loading } = useAuth();
 
   const navItems = [
     { name: "Overview", href: "#overview", icon: Brain },
@@ -39,6 +43,45 @@ const Navigation = () => {
             ))}
           </div>
 
+          {/* Auth Section */}
+          <div className="flex items-center gap-4">
+            {loading ? (
+              <div className="w-20 h-8 bg-muted animate-pulse rounded" />
+            ) : user ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground hidden sm:inline">
+                  {user.email}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={signOut}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setAuthDialogOpen(true)}
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="bg-gradient-neural hover:opacity-90"
+                  onClick={() => setAuthDialogOpen(true)}
+                >
+                  Get Started
+                </Button>
+              </>
+            )}
+          </div>
+
           {/* Mobile Navigation */}
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild className="md:hidden">
@@ -64,6 +107,11 @@ const Navigation = () => {
           </Sheet>
         </div>
       </div>
+      
+      <AuthDialog 
+        open={authDialogOpen} 
+        onOpenChange={setAuthDialogOpen} 
+      />
     </nav>
   );
 };

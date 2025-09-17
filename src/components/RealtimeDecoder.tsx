@@ -4,14 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Zap, Brain, Mic, MicOff } from "lucide-react";
+import { useExperiments } from "@/hooks/useExperiments";
+import { useAuth } from "@/hooks/useAuth";
 
 const RealtimeDecoder = () => {
   const [isDecoding, setIsDecoding] = useState(false);
   const [currentWord, setCurrentWord] = useState("");
   const [confidence, setConfidence] = useState(0);
   const [decodedText, setDecodedText] = useState("");
+  const { currentSession, saveDecodedResult } = useExperiments();
+  const { user } = useAuth();
 
-  const vocabularyWords = ["yes", "no", "water", "help", "stop", "go", "left", "right"];
+  const vocabularyWords = currentSession ? 
+    (currentSession as any).vocabulary_words || ["yes", "no", "water", "help", "stop", "go", "left", "right"] :
+    ["yes", "no", "water", "help", "stop", "go", "left", "right"];
 
   // Simulate real-time decoding
   useEffect(() => {
@@ -25,7 +31,18 @@ const RealtimeDecoder = () => {
         
         // Add to decoded text if confidence is high enough
         if (randomConfidence > 80) {
+          const wasSuccessful = Math.random() > 0.3; // 70% success rate simulation
           setDecodedText(prev => prev + (prev ? " " : "") + randomWord);
+          
+          // Save to database if user is logged in and session exists
+          if (user && currentSession) {
+            saveDecodedResult(
+              currentSession.id,
+              randomWord,
+              randomConfidence,
+              wasSuccessful
+            );
+          }
         }
       }, 2000);
 
@@ -56,6 +73,13 @@ const RealtimeDecoder = () => {
           <p className="text-xl text-muted-foreground">
             Live imagined speech to text conversion
           </p>
+          {currentSession && (
+            <div className="mt-4 p-3 bg-primary/10 rounded-lg border border-primary/20">
+              <p className="text-sm font-medium text-primary">
+                Active Session: {currentSession.session_name}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">

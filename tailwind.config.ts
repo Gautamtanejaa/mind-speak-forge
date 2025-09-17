@@ -47,6 +47,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        neural: {
+          blue: "hsl(var(--neural-blue))",
+          purple: "hsl(var(--neural-purple))",
+          cyan: "hsl(var(--neural-cyan))",
+          electric: "hsl(var(--neural-electric))",
+        },
+        synaptic: {
+          glow: "hsl(var(--synaptic-glow))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +71,12 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        'gradient-neural': 'var(--gradient-neural)',
+        'gradient-synaptic': 'var(--gradient-synaptic)',
+        'gradient-electric': 'var(--gradient-electric)',
+        'gradient-brain': 'var(--gradient-brain)',
       },
       keyframes: {
         "accordion-down": {
@@ -80,10 +95,32 @@ export default {
             height: "0",
           },
         },
+        "neural-pulse": {
+          "0%, 100%": { 
+            boxShadow: "0 0 20px hsl(var(--neural-purple) / 0.3)",
+            transform: "scale(1)"
+          },
+          "50%": { 
+            boxShadow: "0 0 40px hsl(var(--neural-purple) / 0.6)",
+            transform: "scale(1.02)"
+          },
+        },
+        "synaptic-flow": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        "brain-wave": {
+          "0%, 100%": { opacity: "0.6", transform: "translateY(0px)" },
+          "50%": { opacity: "1", transform: "translateY(-5px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "neural-pulse": "neural-pulse 2s ease-in-out infinite",
+        "synaptic-flow": "synaptic-flow 3s ease infinite",
+        "brain-wave": "brain-wave 3s ease-in-out infinite",
       },
     },
   },
